@@ -1,0 +1,21 @@
+{
+  "name": "captive-server",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "use it",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "CodeWizard",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "dgram": "^1.0.1",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "node-fetch": "^3.3.2",
+    "radius": "^1.1.4"
+  }
+}

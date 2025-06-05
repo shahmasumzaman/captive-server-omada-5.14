@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Our Wi-Fi</title>
+<style>
+        body {
+            font-family: 'Roboto', sans-serif; /* Material Design font */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #e0e0e0; /* Light grey background */
+            background-image: url('bg.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        .container {
+            text-align: center;
+            width: 350px;
+			margin: 10px;
+        }
+		
+		
+		.logoDiv{
+			height: 150px;
+			width: 150px;
+			background: no-repeat;
+			background-image: url(mayfarer_white_logo.png);
+			background-size: contain;
+			background-position: center;
+			position: relative;
+			margin:auto;
+			/*filter: brightness(0.1);*/
+		}
+		
+		.form-container{
+			background : #ffffff99;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+			padding: 30px 20px 20px 20px;
+			border-radius: 15px;
+		}
+		
+		
+        h1 {
+            color: #3f51b5; /* Primary Material Design color */
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+        .login-option {
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #000000; /* Secondary text color */
+            font-size: 16px;
+            font-weight: 600;
+			text-align:left;
+        }
+        input[type="text"],
+        input[type="password"],
+        input[type="tel"] {
+            width: calc(100% - 0px);
+            padding: 12px;
+            border: 1px solid #000000;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+            margin-bottom: 10px;
+			background : transparent;
+			color : #000000;
+        }
+        input:focus {
+            outline: none;
+            border-color:#3f51b5 ; /* Focus color */
+            box-shadow: 0 0 4px rgba(63, 81, 181, 0.5);
+        }
+        button {
+            background-color: #3f51b5; /* Primary Material Design color */
+            color: white;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px rgba(0, 0, 0, 0.2); /* Material Design button shadow */
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #3f51b5; /* Darker shade on hover */
+        }
+        .LoginBtn {
+            margin-top: 15px;
+        }
+        .separator {
+            border-top: 1px solid #ccc;
+            margin: 30px 0;
+            color: #757575;
+            position: relative;
+            font-size: 12px;
+        }
+        .separator span {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            padding: 0 10px;
+        }
+        .error {
+			height:10px;
+            color: #f44336; /* Material Design error color */
+            margin-top: 15px;
+            font-size: 14px;
+			font-weight:600
+        }
+       
+		
+		.loader {
+		  width: 40px;
+		  aspect-ratio: 4;
+		  --_g: no-repeat radial-gradient(circle closest-side,#fff 90%,#0000);
+		  background: 
+			var(--_g) 0%   50%,
+			var(--_g) 50%  50%,
+			var(--_g) 100% 50%;
+		  background-size: calc(100%/3) 100%;
+		  animation: l7 1s infinite linear;
+		}
+		@keyframes l7 {
+			33%{background-size:calc(100%/3) 0%  ,calc(100%/3) 100%,calc(100%/3) 100%}
+			50%{background-size:calc(100%/3) 100%,calc(100%/3) 0%  ,calc(100%/3) 100%}
+			66%{background-size:calc(100%/3) 100%,calc(100%/3) 100%,calc(100%/3) 0%  }
+		}
+		
+
+    </style>
+</head>
+<body>
+    <div class="container">
+		<div class="logoDiv" style="" > </div>
+        <div class="form-container">
+            <form id="localUserForm">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Enter username" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter password" required>
+                <button type="submit">Login</button>
+            </form>
+			
+			
+			<div id="message"></div>
+        </div>
+    </div>
+
+    <script>
+       
+        async function submitForm(formId, controllerType) { // Pass controller type now
+            const form = document.getElementById(formId);
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            // Add client info from URL parameters - crucial for captive portals!
+            const urlParams = new URLSearchParams(window.location.search);
+            data.clientMac = urlParams.get('clientMac');
+            data.clientIp = urlParams.get('clientIp');
+            data.redirectUrl = urlParams.get('redirectUrl');
+            data.radioId = urlParams.get('radioId');
+            data.apMac = urlParams.get('apMac');
+            data.ssidName = urlParams.get('ssidName');
+            data.gatewayMac = urlParams.get('gatewayMac');
+            data.vid = urlParams.get('vid');
+            data.originUrl = urlParams.get('originUrl');
+
+            const messageDiv = document.getElementById('message');
+            messageDiv.style.display = 'none';
+            messageDiv.classList.remove('success', 'error');
+
+            try {
+                const response = await fetch(`/api/auth/${controllerType}/username-login`, { // Updated endpoint
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                const result = await response.json();
+
+                messageDiv.style.display = 'block';
+                if (result.success) {
+                    messageDiv.classList.add('success');
+                    messageDiv.textContent = result.message + ' Redirecting...';
+                    setTimeout(() => {
+                        window.location.href = result.redirectUrl || '/'; // Redirect to original URL or home
+                    }, 2000);
+                } else {
+                    messageDiv.classList.add('error');
+                    messageDiv.textContent = result.message;
+                }
+            } catch (error) {
+                messageDiv.style.display = 'block';
+                messageDiv.classList.add('error');
+                messageDiv.textContent = 'An unexpected error occurred. Please try again.';
+                console.error('Fetch error:', error);
+            }
+        }
+
+        document.getElementById('localUserForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            // Assuming this form is for Omada for now.
+            // In a more advanced scenario, the portal redirect from Omada might include
+            // a parameter like `controllerType=omada` which you would then use here.
+            submitForm('localUserForm', 'omada');
+        });
+
+    </script>
+</body>
+</html>
