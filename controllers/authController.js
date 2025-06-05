@@ -57,17 +57,17 @@ export async function handleOmadaUsernameLogin(req, res) {
 
     try {
         // 2. Authenticate with RADIUS
-//        const radiusSuccess = await authenticateWithRadius(
-//            username,
-//            password,
-//            clientMac,
-//            clientIp // clientIp is relevant for RADIUS Access-Request
-//        );
-//
-//        if (!radiusSuccess) {
-//            console.log(`RADIUS authentication failed for user: ${username}`);
-//            throw new AuthenticationError("Invalid username or password.");
-//        }
+       const radiusSuccess = await authenticateWithRadius(
+           username,
+           password,
+           clientMac,
+           clientIp // clientIp is relevant for RADIUS Access-Request
+       );
+
+       if (!radiusSuccess) {
+           console.log(`RADIUS authentication failed for user: ${username}`);
+           throw new AuthenticationError("Invalid username or password.");
+       }
 
         console.log(`RADIUS authentication successful for user: ${username}`);
 
